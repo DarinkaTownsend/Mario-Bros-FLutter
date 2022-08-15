@@ -1,0 +1,304 @@
+// Copyright (c) 2019, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+//http://www.avatarsinpixels.com/minipix/eyJXaW5ncyI6IjEiLCJFeWVzIjoiMSIsIk1vdXRoIjoiNSIsIlNob2VzIjoiMSIsIkdsb3ZlcyI6IjUiLCJQYW50cyI6IjIiLCJUb3AiOiI4IiwiSmFja2V0IjoiNSIsIkhhaXIiOiIzMSIsInBhbnRzVG9uZSI6IjMzMzMzMyIsInRvcFRvbmUiOiJlZDQzOGEiLCJ0b3BUb25lMiI6IjJhZWJlYiIsInNob2VzVG9uZSI6ImVlZWVlZSIsImphY2tldFRvbmUiOiIwMDc2ZGQifQ==/1/show.png
+import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:math';
+void main() => runApp(MyApp());
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Mario Bross'),
+    );
+  }
+}
+class MyHomePage extends StatefulWidget {
+  final String title;
+  const MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+class _MyHomePageState extends State<MyHomePage> {
+  static double mariox = 0.0;
+  static double marioy = 1.0;
+  static double darinkax = 0.0;
+  static double darinkay = 1.0;
+  static int puntosDarinka=0;
+  double time = 0;
+  double height = 0;
+   double timeDarinka = 0;
+  double heightDarinka = 0;
+  
+  double initialPos = marioy;
+  double initialPosDarinka = darinkay;
+  String direction = "right";
+   String directionDarinka = "right";
+  
+  
+  void preJump() {
+    time = 0;
+    initialPos = marioy;
+  }
+  
+   void preJumpDarinka() {
+    timeDarinka = 0;
+    initialPosDarinka = darinkay;
+  }
+  
+  
+  void jump() {
+    preJump();
+    Timer.periodic(Duration(milliseconds: 50), (timer) {
+      time += 0.05;
+      height = -4.9 * time * time + 5 * time;
+      if (initialPos - height > 1) {
+        setState(() {
+          marioy = 1;
+        });
+      } else {
+        setState(() {
+          marioy = initialPos - height;
+        });
+      }
+    });
+  }
+  
+  
+   void jumpDarinka() {
+    puntosDarinka+=1;
+    preJumpDarinka();
+    Timer.periodic(Duration(milliseconds: 50), (timer) {
+      timeDarinka += 0.05;
+      heightDarinka = -4.9 * timeDarinka * timeDarinka + 5 * timeDarinka;
+      if (initialPosDarinka - heightDarinka > 1) {
+        setState(() {
+          darinkay = 1;
+        });
+      } else {
+        setState(() {
+          darinkay = initialPosDarinka - heightDarinka;
+        });
+      }
+    });
+     
+  }
+  
+  void walkL() {
+    direction = "left";
+    setState(() {
+      mariox -= 0.02;
+    });
+  }
+  
+  void walkLDarinka() {
+    directionDarinka = "left";
+    setState(() {
+      darinkax -= 0.02;
+    });
+  }
+  
+  
+  void walkR() {
+    direction = "right";
+    setState(() {
+      mariox += 0.02;
+    });
+  }
+  
+  void walkRDarinka() {
+    directionDarinka = "right";
+    setState(() {
+      darinkax += 0.02;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Column(children: [
+        
+        Container(
+          padding: const EdgeInsets.all(40),
+          color: Colors.blue,
+          child: Row(
+
+
+            children: const <Widget>[
+              Expanded(
+
+                child: Text('Vida', textAlign: TextAlign.center , style: TextStyle(
+    color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20), ),
+              ),
+              Expanded(
+                child: Text('Puntos', textAlign: TextAlign.center , style: TextStyle(
+    color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
+              ),
+         
+                
+               
+              
+              Expanded(
+                child: Text('Tiempo', textAlign: TextAlign.center, style: TextStyle(
+    color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20)),
+                  ),
+            ],
+          ),
+        ),
+        Expanded(
+            flex: 4,
+            child: Container(
+                color: Colors.blue,
+                
+                child:Row(
+                children:[
+                  
+                  AnimatedContainer(
+                    alignment: Alignment(mariox, marioy),
+                    duration: Duration(milliseconds: 0),
+                    child: Mario(
+                      direction: direction,)
+                    ),
+                  
+                  AnimatedContainer(
+                    alignment: Alignment(darinkax, darinkay),
+                    duration: Duration(milliseconds: 0),
+                    child: Darinka(
+                      directionDarinka: directionDarinka,)
+                    ),
+                  
+                  
+                ],
+                  ),
+                
+                )
+            
+            ),
+        Container(height: 10, color: Colors.green),
+        Expanded(
+            flex: 1,
+            child: Container(
+                color: Colors.brown,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                          onTap: walkL,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            color: Colors.brown[300],
+                            child: Icon(Icons.arrow_back),
+                          )),
+                      GestureDetector(
+                          onTap: jump,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            color: Colors.brown[300],
+                            child: Icon(Icons.arrow_upward),
+                          )),
+                      GestureDetector(
+                          onTap: walkR,
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              color: Colors.brown[300],
+                              child: Icon(Icons.arrow_forward))),
+                      
+                      
+                      
+                       GestureDetector(
+                          onTap: walkLDarinka,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            color: Colors.brown[300],
+                            child: Icon(Icons.arrow_back),
+                          )),
+                      GestureDetector(
+                          onTap: jumpDarinka,
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            color: Colors.brown[300],
+                            child: Icon(Icons.arrow_upward),
+                          )),
+                      GestureDetector(
+                          onTap: walkRDarinka,
+                          child: Container(
+                              padding: EdgeInsets.all(10),
+                              color: Colors.brown[300],
+                              child: Icon(Icons.arrow_forward))),
+                    ])))
+      ]),
+    );
+  }
+}
+class Mario extends StatelessWidget{
+  
+  final direction;
+  
+  Mario({this.direction});
+  
+  @override
+  Widget build(BuildContext context){
+    if (direction == "right"){
+      return Container(
+        width: 50,
+        height: 50,
+        child: Image.network(
+                        "https://cdn.pixabay.com/photo/2021/02/11/15/40/mario-6005703_960_720.png")
+      );
+    }else{
+      return Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationY(pi),
+        child: Container(
+        width: 50,
+        height: 50,
+        child: Image.network(
+                        "https://cdn.pixabay.com/photo/2021/02/11/15/40/mario-6005703_960_720.png")
+      ));
+    }
+  }
+  
+}
+
+class Darinka extends StatelessWidget{
+  
+  final directionDarinka;
+  
+  Darinka({this.directionDarinka});
+  
+  @override
+  Widget build(BuildContext context){
+    if (directionDarinka == "right"){
+      return Container(
+        width: 50,
+        height: 50,
+        child: Image.network(
+                        "https://raw.githubusercontent.com/DarinkaTownsend/Mario-Bros-FLutter/main/mi%20avatar.png")
+      );
+    }else{
+      return Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.rotationY(pi),
+        child: Container(
+        width: 50,
+        height: 50,
+        child: Image.network(
+                        "https://raw.githubusercontent.com/DarinkaTownsend/Mario-Bros-FLutter/main/mi%20avatar.png")
+      ));
+    }
+  }
+  
+}
+
